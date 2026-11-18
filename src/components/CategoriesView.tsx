@@ -81,10 +81,10 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
       >
         <div className="bg-architectural-grid absolute inset-0 [mask-image:radial-gradient(ellipse_70%_70%_at_50%_20%,black_30%,transparent_100%)]" />
         <div
-          className="absolute left-1/2 top-0 h-[340px] w-[720px] -translate-x-1/2 rounded-full blur-3xl"
+          className="absolute left-1/2 top-0 h-[360px] w-[760px] -translate-x-1/2"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(76, 175, 80, 0.14) 0%, rgba(27, 94, 32, 0.06) 45%, transparent 75%)",
+              "radial-gradient(ellipse at center, rgba(76, 175, 80, 0.16) 0%, rgba(27, 94, 32, 0.07) 42%, transparent 72%)",
           }}
         />
       </div>

@@ -5,12 +5,21 @@ import { CATEGORIES, AWARDS_EDITION } from "@/data/categories";
 import type { AppView, VoterProfile, VotesMap } from "@/types/awards";
 import { Navbar } from "@/components/Navbar";
 import { CategoriesView } from "@/components/CategoriesView";
-import { VotingView } from "@/components/VotingView";
-import { ResultsView } from "@/components/ResultsView";
-import { VoterProfileDialog } from "@/components/VoterProfileDialog";
 import { EcologicaLogo } from "@/components/EcologicaLogo";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+
+const VotingView = React.lazy(() =>
+  import("@/components/VotingView").then((m) => ({ default: m.VotingView }))
+);
+const ResultsView = React.lazy(() =>
+  import("@/components/ResultsView").then((m) => ({ default: m.ResultsView }))
+);
+const VoterProfileDialog = React.lazy(() =>
+  import("@/components/VoterProfileDialog").then((m) => ({
+    default: m.VoterProfileDialog,
+  }))
+);
 
 const STORAGE_VOTES_KEY = "ecologica-awards-votes-v2";
 const STORAGE_PROFILE_KEY = "ecologica-awards-profile-v2";
@@ -90,40 +99,47 @@ function AppContent() {
     [categories, votes]
   );
 
-  const handleSelectCategory = (categoryId: string) => {
+  const handleSelectCategory = React.useCallback((categoryId: string) => {
     setActiveCategoryId(categoryId);
     setView("vote");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
 
-  const handleStartVoting = () => {
+  const handleStartVoting = React.useCallback(() => {
     const firstPending = categories.find((c) => !votes[c.id]);
     setActiveCategoryId(firstPending ? firstPending.id : categories[0].id);
     setView("vote");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, [categories, votes]);
 
-  const handleVote = (categoryId: string, nomineeId: string) => {
-    const cat = categories.find((c) => c.id === categoryId);
-    const nom = cat?.nominees.find((n) => n.id === nomineeId);
-    setVotes((prev) => ({
-      ...prev,
-      [categoryId]: nomineeId,
-    }));
-    if (nom) {
-      showToast(t.toasts.voteRecorded(nom.title));
-    }
-  };
+  const handleVote = React.useCallback(
+    (categoryId: string, nomineeId: string) => {
+      const cat = categories.find((c) => c.id === categoryId);
+      const nom = cat?.nominees.find((n) => n.id === nomineeId);
+      setVotes((prev) => ({
+        ...prev,
+        [categoryId]: nomineeId,
+      }));
+      if (nom) {
+        showToast(t.toasts.voteRecorded(nom.title));
+      }
+    },
+    [categories, showToast, t]
+  );
 
-  const handleResetVotes = () => {
+  const handleResetVotes = React.useCallback(() => {
     setVotes({});
     showToast(t.toasts.votesCleared);
-  };
+  }, [showToast, t]);
 
-  const handleNavigate = (nextView: AppView) => {
+  const handleNavigate = React.useCallback((nextView: AppView) => {
     setView(nextView);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
+
+  const handleOpenProfile = React.useCallback(() => {
+    setProfileDialogOpen(true);
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-[#0a0a0a] text-[#fafafa]">
@@ -133,72 +149,54 @@ function AppContent() {
         votedCount={votedCount}
         totalCategories={categories.length}
         profile={profile}
-        onOpenProfile={() => setProfileDialogOpen(true)}
+        onOpenProfile={handleOpenProfile}
       />
 
       <main className="flex-1">
-        <AnimatePresence mode="wait">
+        <React.Suspense
+          fallback={
+            <div className="mx-auto flex min-h-[50vh] max-w-6xl items-center justify-center px-4">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#233224] border-t-[#4caf50]" />
+            </div>
+          }
+        >
           {view === "categories" && (
-            <motion.div
-              key="view-categories"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <CategoriesView
-                categories={categories}
-                votes={votes}
-                profile={profile}
-                onProfileChange={setProfile}
-                onOpenProfileDialog={() => setProfileDialogOpen(true)}
-                onSelectCategory={handleSelectCategory}
-                onStartVoting={handleStartVoting}
-                onOpenResults={() => handleNavigate("results")}
-              />
-            </motion.div>
+            <CategoriesView
+              categories={categories}
+              votes={votes}
+              profile={profile}
+              onProfileChange={setProfile}
+              onOpenProfileDialog={handleOpenProfile}
+              onSelectCategory={handleSelectCategory}
+              onStartVoting={handleStartVoting}
+              onOpenResults={() => handleNavigate("results")}
+            />
           )}
 
           {view === "vote" && (
-            <motion.div
-              key="view-vote"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <VotingView
-                categories={categories}
-                activeCategoryId={activeCategoryId}
-                votes={votes}
-                onSelectCategory={setActiveCategoryId}
-                onVote={handleVote}
-                onBackToCategories={() => handleNavigate("categories")}
-                onFinishToResults={() => handleNavigate("results")}
-              />
-            </motion.div>
+            <VotingView
+              categories={categories}
+              activeCategoryId={activeCategoryId}
+              votes={votes}
+              onSelectCategory={setActiveCategoryId}
+              onVote={handleVote}
+              onBackToCategories={() => handleNavigate("categories")}
+              onFinishToResults={() => handleNavigate("results")}
+            />
           )}
 
           {view === "results" && (
-            <motion.div
-              key="view-results"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <ResultsView
-                categories={categories}
-                votes={votes}
-                profile={profile}
-                onOpenProfile={() => setProfileDialogOpen(true)}
-                onEditCategory={handleSelectCategory}
-                onResetVotes={handleResetVotes}
-                onBackToCategories={() => handleNavigate("categories")}
-              />
-            </motion.div>
+            <ResultsView
+              categories={categories}
+              votes={votes}
+              profile={profile}
+              onOpenProfile={handleOpenProfile}
+              onEditCategory={handleSelectCategory}
+              onResetVotes={handleResetVotes}
+              onBackToCategories={() => handleNavigate("categories")}
+            />
           )}
-        </AnimatePresence>
+        </React.Suspense>
       </main>
 
       <footer className="border-t border-[#18181b] bg-[#0a0a0a] pb-16 sm:pb-8">
@@ -227,7 +225,7 @@ function AppContent() {
             <span className="text-[#27272a]">•</span>
             <button
               type="button"
-              onClick={() => setProfileDialogOpen(true)}
+              onClick={handleOpenProfile}
               className="transition-colors hover:text-[#e4e4e7] cursor-pointer"
             >
               {t.footer.voterProfile}
@@ -238,15 +236,19 @@ function AppContent() {
 
       <MusicPlayer />
 
-      <VoterProfileDialog
-        open={profileDialogOpen}
-        onOpenChange={setProfileDialogOpen}
-        profile={profile}
-        onSave={(next) => {
-          setProfile(next);
-          showToast(t.toasts.profileUpdated);
-        }}
-      />
+      {profileDialogOpen && (
+        <React.Suspense fallback={null}>
+          <VoterProfileDialog
+            open={profileDialogOpen}
+            onOpenChange={setProfileDialogOpen}
+            profile={profile}
+            onSave={(next) => {
+              setProfile(next);
+              showToast(t.toasts.profileUpdated);
+            }}
+          />
+        </React.Suspense>
+      )}
 
       <AnimatePresence>
         {toast && (
@@ -255,7 +257,7 @@ function AppContent() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-lg border border-[#4caf50]/40 bg-[#111611]/95 px-3.5 py-2.5 text-xs font-medium text-[#e8f5e9] shadow-xl shadow-black/70 backdrop-blur-md"
+            className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-lg border border-[#4caf50]/40 bg-[#111611]/95 px-3.5 py-2.5 text-xs font-medium text-[#e8f5e9] shadow-xl shadow-black/70"
           >
             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#4caf50] text-[#051608]">
               <Check className="h-3 w-3 stroke-[3]" />

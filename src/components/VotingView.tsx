@@ -1,5 +1,4 @@
 import * as React from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -149,15 +148,7 @@ export const VotingView: React.FC<VotingViewProps> = ({
         })}
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={category.id}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8"
-        >
+      <div key={category.id} className="mt-8">
           <div className="mb-8 flex flex-col justify-between gap-4 border-b border-[#1c1c1f] pb-6 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <div className="flex items-center gap-2.5">
@@ -266,8 +257,7 @@ export const VotingView: React.FC<VotingViewProps> = ({
               )}
             </div>
           </div>
-        </motion.div>
-      </AnimatePresence>
+      </div>
     </div>
   );
 };

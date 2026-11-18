@@ -1,6 +1,5 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { toCanvas } from "html-to-image";
 import {
   Download,
   UserPen,
@@ -63,7 +62,8 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
     try {
       setIsExporting(true);
       setExportMessage(null);
-      const pixelRatio = 2;
+      const pixelRatio = window.innerWidth < 640 ? 1.5 : 2;
+      const { toCanvas } = await import("html-to-image");
       const renderedCanvas = await toCanvas(ballotRef.current, {
         cacheBust: true,
         pixelRatio,
@@ -177,10 +177,10 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         >
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-[560px] -translate-x-1/2 rounded-full blur-3xl"
+            className="pointer-events-none absolute -top-20 left-1/2 h-64 w-[620px] -translate-x-1/2"
             style={{
               background:
-                "radial-gradient(ellipse at center, rgba(76, 175, 80, 0.24) 0%, rgba(27, 94, 32, 0.08) 52%, transparent 78%)",
+                "radial-gradient(ellipse at center, rgba(76, 175, 80, 0.22) 0%, rgba(27, 94, 32, 0.08) 46%, transparent 74%)",
             }}
           />
 

@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#1a1a1d] bg-[#0a0a0a]/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-[#1a1a1d] bg-[#0a0a0a]/96 sm:bg-[#0a0a0a]/85 sm:backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
         <button
           type="button"

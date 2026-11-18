@@ -30,7 +30,7 @@ export const MusicPlayer: React.FC = () => {
   React.useEffect(() => {
     const audio = new Audio("./audio/theme.m4a");
     audio.loop = true;
-    audio.preload = "auto";
+    audio.preload = "metadata";
     audio.volume = volume;
     audioRef.current = audio;
 
@@ -116,7 +116,7 @@ export const MusicPlayer: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-5 left-5 z-40 flex items-center gap-2 rounded-full border border-[#233224] bg-[#101410]/92 px-2.5 py-1.5 text-xs text-[#e4e4e7] shadow-xl shadow-black/70 backdrop-blur-md transition-colors hover:border-[#39543b]"
+      className="fixed bottom-5 left-5 z-40 flex items-center gap-2 rounded-full border border-[#233224] bg-[#101410]/96 px-2.5 py-1.5 text-xs text-[#e4e4e7] shadow-xl shadow-black/70 transition-colors hover:border-[#39543b] sm:bg-[#101410]/92 sm:backdrop-blur-md"
       role="region"
       aria-label={t.audio.label}
     >
