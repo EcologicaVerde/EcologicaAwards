@@ -2,15 +2,32 @@ import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { CATEGORIES, AWARDS_EDITION } from "@/data/categories";
-import type { AppView, VoterProfile, VotesMap } from "@/types/awards";
+import type {
+  AppView,
+  CommunityStats,
+  VoterProfile,
+  VotesMap,
+} from "@/types/awards";
 import { Navbar } from "@/components/Navbar";
 import { CategoriesView } from "@/components/CategoriesView";
 import { EcologicaLogo } from "@/components/EcologicaLogo";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { LanguageProvider, useLanguage } from "@/i18n/LanguageContext";
+import {
+  applyOptimisticVote,
+  buildLocalStats,
+  clearCommunityVotes,
+  fetchCommunityStats,
+  submitCommunityVote,
+} from "@/services/communityVotes";
 
 const VotingView = React.lazy(() =>
   import("@/components/VotingView").then((m) => ({ default: m.VotingView }))
+);
+const CommunityView = React.lazy(() =>
+  import("@/components/CommunityView").then((m) => ({
+    default: m.CommunityView,
+  }))
 );
 const ResultsView = React.lazy(() =>
   import("@/components/ResultsView").then((m) => ({ default: m.ResultsView }))
@@ -65,10 +82,16 @@ function AppContent() {
   const [votes, setVotes] = React.useState<VotesMap>(loadStoredVotes);
   const [profile, setProfile] = React.useState<VoterProfile>(loadStoredProfile);
   const [profileDialogOpen, setProfileDialogOpen] = React.useState(false);
+  const [communityStats, setCommunityStats] = React.useState<CommunityStats>(
+    () => buildLocalStats(loadStoredVotes())
+  );
+  const [isRefreshingStats, setIsRefreshingStats] = React.useState(false);
   const [toast, setToast] = React.useState<string | null>(null);
   const toastTimerRef = React.useRef<number | null>(null);
+  const votesRef = React.useRef(votes);
 
   React.useEffect(() => {
+    votesRef.current = votes;
     try {
       localStorage.setItem(STORAGE_VOTES_KEY, JSON.stringify(votes));
     } catch {
@@ -83,6 +106,20 @@ function AppContent() {
       return;
     }
   }, [profile]);
+
+  const refreshCommunityStats = React.useCallback(async () => {
+    setIsRefreshingStats(true);
+    try {
+      const next = await fetchCommunityStats(votesRef.current);
+      setCommunityStats(next);
+    } finally {
+      setIsRefreshingStats(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    refreshCommunityStats();
+  }, [refreshCommunityStats]);
 
   const showToast = React.useCallback((message: string) => {
     setToast(message);
@@ -116,26 +153,60 @@ function AppContent() {
     (categoryId: string, nomineeId: string) => {
       const cat = categories.find((c) => c.id === categoryId);
       const nom = cat?.nominees.find((n) => n.id === nomineeId);
+      const prevNomineeId = votesRef.current[categoryId];
+      const hadAnyBefore = Object.keys(votesRef.current).length > 0;
+
       setVotes((prev) => ({
         ...prev,
         [categoryId]: nomineeId,
       }));
+
+      setCommunityStats((prev) =>
+        applyOptimisticVote(
+          prev,
+          categoryId,
+          prevNomineeId,
+          nomineeId,
+          hadAnyBefore
+        )
+      );
+
+      submitCommunityVote(categoryId, nomineeId).then((synced) => {
+        if (synced) {
+          refreshCommunityStats();
+        }
+      });
+
       if (nom) {
         showToast(t.toasts.voteRecorded(nom.title));
       }
     },
-    [categories, showToast, t]
+    [categories, refreshCommunityStats, showToast, t]
   );
 
   const handleResetVotes = React.useCallback(() => {
     setVotes({});
+    setCommunityStats((prev) =>
+      prev.isLive ? prev : buildLocalStats({})
+    );
+    clearCommunityVotes().then((synced) => {
+      if (synced) {
+        refreshCommunityStats();
+      }
+    });
     showToast(t.toasts.votesCleared);
-  }, [showToast, t]);
+  }, [refreshCommunityStats, showToast, t]);
 
-  const handleNavigate = React.useCallback((nextView: AppView) => {
-    setView(nextView);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  const handleNavigate = React.useCallback(
+    (nextView: AppView) => {
+      setView(nextView);
+      if (nextView === "community") {
+        refreshCommunityStats();
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [refreshCommunityStats]
+  );
 
   const handleOpenProfile = React.useCallback(() => {
     setProfileDialogOpen(true);
@@ -178,10 +249,24 @@ function AppContent() {
               categories={categories}
               activeCategoryId={activeCategoryId}
               votes={votes}
+              tallies={communityStats.tallies}
               onSelectCategory={setActiveCategoryId}
               onVote={handleVote}
               onBackToCategories={() => handleNavigate("categories")}
               onFinishToResults={() => handleNavigate("results")}
+              onOpenCommunity={() => handleNavigate("community")}
+            />
+          )}
+
+          {view === "community" && (
+            <CommunityView
+              categories={categories}
+              votes={votes}
+              stats={communityStats}
+              isRefreshing={isRefreshingStats}
+              onRefresh={refreshCommunityStats}
+              onGoToCategory={handleSelectCategory}
+              onStartVoting={handleStartVoting}
             />
           )}
 

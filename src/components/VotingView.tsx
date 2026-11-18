@@ -7,8 +7,9 @@ import {
   Trophy,
   Award,
 } from "lucide-react";
-import type { Category, VotesMap } from "@/types/awards";
+import type { Category, VoteTalliesMap, VotesMap } from "@/types/awards";
 import { NomineeCard } from "@/components/NomineeCard";
+import { CategoryVoteChart } from "@/components/CategoryVoteChart";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,20 +19,24 @@ interface VotingViewProps {
   categories: Category[];
   activeCategoryId: string;
   votes: VotesMap;
+  tallies: VoteTalliesMap;
   onSelectCategory: (categoryId: string) => void;
   onVote: (categoryId: string, nomineeId: string) => void;
   onBackToCategories: () => void;
   onFinishToResults: () => void;
+  onOpenCommunity: () => void;
 }
 
 export const VotingView: React.FC<VotingViewProps> = ({
   categories,
   activeCategoryId,
   votes,
+  tallies,
   onSelectCategory,
   onVote,
   onBackToCategories,
   onFinishToResults,
+  onOpenCommunity,
 }) => {
   const { t } = useLanguage();
   const currentIndex = Math.max(
@@ -257,6 +262,17 @@ export const VotingView: React.FC<VotingViewProps> = ({
               )}
             </div>
           </div>
+
+          {selectedNomineeId && (
+            <div className="mt-6">
+              <CategoryVoteChart
+                category={category}
+                categoryTallies={tallies[category.id] ?? {}}
+                userNomineeId={selectedNomineeId}
+                onOpenCommunity={onOpenCommunity}
+              />
+            </div>
+          )}
       </div>
     </div>
   );

@@ -39,4 +39,12 @@ export interface VoterProfile {
 
 export type VotesMap = Record<string, string>;
 
-export type AppView = "categories" | "vote" | "results";
+export type VoteTalliesMap = Record<string, Record<string, number>>;
+
+export interface CommunityStats {
+  tallies: VoteTalliesMap;
+  totalVoters: number;
+  isLive: boolean;
+}
+
+export type AppView = "categories" | "vote" | "community" | "results";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LayoutGrid, Vote, Trophy, UserPen, Globe } from "lucide-react";
+import { LayoutGrid, Vote, BarChart3, Trophy, UserPen, Globe } from "lucide-react";
 import { EcologicaLogo } from "@/components/EcologicaLogo";
 import { Avatar } from "@/components/ui/avatar";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,6 +36,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       id: "vote",
       label: t.nav.vote,
       icon: <Vote className="h-3.5 w-3.5" />,
+    },
+    {
+      id: "community",
+      label: t.nav.community,
+      icon: <BarChart3 className="h-3.5 w-3.5" />,
     },
     {
       id: "results",

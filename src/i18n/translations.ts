@@ -14,6 +14,7 @@ export interface UITranslations {
   nav: {
     categories: string;
     vote: string;
+    community: string;
     results: string;
     editProfileTooltip: string;
     languageLabel: string;
@@ -139,6 +140,35 @@ export interface UITranslations {
     volume: string;
     clickToEnable: string;
   };
+  community: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    tabLeaders: string;
+    tabByCategory: string;
+    refresh: string;
+    refreshing: string;
+    participants: string;
+    totalVotes: string;
+    unlocked: string;
+    liveMode: string;
+    localMode: string;
+    localModeNotice: string;
+    antiBiasBanner: string;
+    startVotingCta: string;
+    lockedTitle: string;
+    lockedDesc: string;
+    voteToUnlock: string;
+    leaderBadge: string;
+    yourVoteBadge: string;
+    tiedBadge: string;
+    noVotesYet: string;
+    votesCount: (count: number) => string;
+    categoryPartialTitle: string;
+    categoryTotalVotes: (count: number) => string;
+    searchPlaceholder: string;
+    viewAllCharts: string;
+  };
   genres: Record<string, string>;
   years: Record<string, string>;
 }
@@ -151,6 +181,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
     nav: {
       categories: "Categorias",
       vote: "Votação",
+      community: "Comunidade",
       results: "Meus Resultados",
       editProfileTooltip: "Editar Avatar e Username",
       languageLabel: "Idioma",
@@ -284,6 +315,39 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       volume: "Volume da música",
       clickToEnable: "Clique para ativar o áudio",
     },
+    community: {
+      eyebrow: "Votação Acumulada",
+      title: "Gráficos da Comunidade",
+      subtitle:
+        "Acompanhe os líderes e a distribuição de votos em tempo real. Para não influenciar sua escolha, cada categoria só é revelada após o seu voto.",
+      tabLeaders: "Mais Votados",
+      tabByCategory: "Por Categoria",
+      refresh: "Atualizar",
+      refreshing: "Atualizando...",
+      participants: "Participantes",
+      totalVotes: "Votos acumulados",
+      unlocked: "Categorias liberadas",
+      liveMode: "Contagem global ativa",
+      localMode: "Modo local (configure o Supabase)",
+      localModeNotice:
+        "Os gráficos estão exibindo apenas seus votos locais. Conecte seu projeto gratuito no Supabase para acumular os votos de toda a comunidade.",
+      antiBiasBanner:
+        "Para não influenciar quem ainda vai votar, os resultados de cada categoria ficam bloqueados até você registrar seu voto nela.",
+      startVotingCta: "Ir para votação",
+      lockedTitle: "Resultado oculto",
+      lockedDesc: "Vote nesta categoria para revelar o gráfico da comunidade.",
+      voteToUnlock: "Votar para revelar",
+      leaderBadge: "Mais votado",
+      yourVoteBadge: "Seu voto",
+      tiedBadge: "Empate na liderança",
+      noVotesYet: "Sem votos registrados",
+      votesCount: (count) => (count === 1 ? "1 voto" : `${count} votos`),
+      categoryPartialTitle: "Parcial da comunidade nesta categoria",
+      categoryTotalVotes: (count) =>
+        count === 1 ? "1 voto total" : `${count} votos totais`,
+      searchPlaceholder: "Filtrar categoria...",
+      viewAllCharts: "Ver painel completo da comunidade",
+    },
     genres: {
       "Ação / Aventura": "Ação / Aventura",
       "Mundo Aberto": "Mundo Aberto",
@@ -338,6 +402,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
     nav: {
       categories: "Categories",
       vote: "Vote",
+      community: "Community",
       results: "My Results",
       editProfileTooltip: "Edit Avatar & Username",
       languageLabel: "Language",
@@ -471,6 +536,39 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       volume: "Music volume",
       clickToEnable: "Click to enable audio",
     },
+    community: {
+      eyebrow: "Cumulative Voting",
+      title: "Community Charts",
+      subtitle:
+        "Track the leaders and full vote breakdown in real time. To prevent bias, each category is revealed only after you cast your vote in it.",
+      tabLeaders: "Most Voted",
+      tabByCategory: "By Category",
+      refresh: "Refresh",
+      refreshing: "Refreshing...",
+      participants: "Voters",
+      totalVotes: "Total votes",
+      unlocked: "Unlocked categories",
+      liveMode: "Global tally active",
+      localMode: "Local mode (configure Supabase)",
+      localModeNotice:
+        "Charts are currently showing only your local votes. Connect your free Supabase project to accumulate votes from the entire community.",
+      antiBiasBanner:
+        "To avoid influencing voters, results for each category stay locked until you cast your vote in it.",
+      startVotingCta: "Go to voting",
+      lockedTitle: "Result hidden",
+      lockedDesc: "Vote in this category to reveal the community chart.",
+      voteToUnlock: "Vote to unlock",
+      leaderBadge: "Most voted",
+      yourVoteBadge: "Your vote",
+      tiedBadge: "Tied for 1st",
+      noVotesYet: "No votes yet",
+      votesCount: (count) => (count === 1 ? "1 vote" : `${count} votes`),
+      categoryPartialTitle: "Community tally for this category",
+      categoryTotalVotes: (count) =>
+        count === 1 ? "1 total vote" : `${count} total votes`,
+      searchPlaceholder: "Filter category...",
+      viewAllCharts: "View full community dashboard",
+    },
     genres: {
       "Ação / Aventura": "Action / Adventure",
       "Mundo Aberto": "Open World",
@@ -525,6 +623,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
     nav: {
       categories: "Categorías",
       vote: "Votación",
+      community: "Comunidad",
       results: "Mis Resultados",
       editProfileTooltip: "Editar Avatar y Usuario",
       languageLabel: "Idioma",
@@ -658,6 +757,39 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       volume: "Volumen de la música",
       clickToEnable: "Haz clic para activar el audio",
     },
+    community: {
+      eyebrow: "Votación Acumulada",
+      title: "Gráficos de la Comunidad",
+      subtitle:
+        "Sigue a los líderes y el desglose de votos en tiempo real. Para no influir en tu elección, cada categoría solo se revela después de votar.",
+      tabLeaders: "Más Votados",
+      tabByCategory: "Por Categoría",
+      refresh: "Actualizar",
+      refreshing: "Actualizando...",
+      participants: "Participantes",
+      totalVotes: "Votos acumulados",
+      unlocked: "Categorías desbloqueadas",
+      liveMode: "Conteo global activo",
+      localMode: "Modo local (configura Supabase)",
+      localModeNotice:
+        "Los gráficos muestran solo tus votos locales. Conecta tu proyecto gratuito en Supabase para acumular los votos de toda la comunidad.",
+      antiBiasBanner:
+        "Para no influir en quienes aún votan, los resultados de cada categoría permanecen bloqueados hasta que registres tu voto.",
+      startVotingCta: "Ir a votar",
+      lockedTitle: "Resultado oculto",
+      lockedDesc: "Vota en esta categoría para ver el gráfico de la comunidad.",
+      voteToUnlock: "Votar para revelar",
+      leaderBadge: "Más votado",
+      yourVoteBadge: "Tu voto",
+      tiedBadge: "Empate en el 1.º puesto",
+      noVotesYet: "Sin votos aún",
+      votesCount: (count) => (count === 1 ? "1 voto" : `${count} votos`),
+      categoryPartialTitle: "Parcial de la comunidad en esta categoría",
+      categoryTotalVotes: (count) =>
+        count === 1 ? "1 voto total" : `${count} votos totales`,
+      searchPlaceholder: "Filtrar categoría...",
+      viewAllCharts: "Ver panel completo de la comunidad",
+    },
     genres: {
       "Ação / Aventura": "Acción / Aventura",
       "Mundo Aberto": "Mundo Abierto",
@@ -712,6 +844,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
     nav: {
       categories: "Категории",
       vote: "Голосование",
+      community: "Сообщество",
       results: "Мои результаты",
       editProfileTooltip: "Изменить аватар и имя",
       languageLabel: "Язык",
@@ -845,6 +978,38 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       unmute: "Включить звук",
       volume: "Громкость музыки",
       clickToEnable: "Нажмите, чтобы включить звук",
+    },
+    community: {
+      eyebrow: "Общие итоги",
+      title: "Графики сообщества",
+      subtitle:
+        "Следите за лидерами и распределением голосов в реальном времени. Чтобы не влиять на выбор, каждая категория открывается только после вашего голоса.",
+      tabLeaders: "Лидеры",
+      tabByCategory: "По категориям",
+      refresh: "Обновить",
+      refreshing: "Обновление...",
+      participants: "Участники",
+      totalVotes: "Всего голосов",
+      unlocked: "Открыто категорий",
+      liveMode: "Глобальный подсчёт активен",
+      localMode: "Локальный режим (подключите Supabase)",
+      localModeNotice:
+        "Сейчас графики показывают только ваши локальные голоса. Подключите бесплатный проект Supabase для общего подсчёта.",
+      antiBiasBanner:
+        "Чтобы не влиять на голосующих, результаты каждой категории скрыты до того, как вы отдадите свой голос.",
+      startVotingCta: "Перейти к голосованию",
+      lockedTitle: "Результат скрыт",
+      lockedDesc: "Проголосуйте в этой категории, чтобы открыть график.",
+      voteToUnlock: "Голосовать и открыть",
+      leaderBadge: "Лидер",
+      yourVoteBadge: "Ваш голос",
+      tiedBadge: "Ничья за 1-е место",
+      noVotesYet: "Пока нет голосов",
+      votesCount: (count) => `${count}`,
+      categoryPartialTitle: "Результаты сообщества в этой категории",
+      categoryTotalVotes: (count) => `Всего голосов: ${count}`,
+      searchPlaceholder: "Поиск категории...",
+      viewAllCharts: "Открыть все графики сообщества",
     },
     genres: {
       "Ação / Aventura": "Экшен / Приключения",
