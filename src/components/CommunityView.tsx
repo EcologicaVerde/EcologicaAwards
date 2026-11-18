@@ -79,21 +79,9 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
               <BarChart3 className="h-3.5 w-3.5" />
               {t.community.eyebrow}
             </span>
-            <span
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[10px]",
-                stats.isLive
-                  ? "border-[#4caf50]/35 bg-[#4caf50]/12 text-[#81c784]"
-                  : "border-[#27272a] bg-[#141416] text-[#8c8c94]"
-              )}
-            >
-              <span
-                className={cn(
-                  "h-1.5 w-1.5 rounded-full",
-                  stats.isLive ? "bg-[#4caf50]" : "bg-[#71717a]"
-                )}
-              />
-              {stats.isLive ? t.community.liveMode : t.community.localMode}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#4caf50]/35 bg-[#4caf50]/12 px-2.5 py-0.5 font-mono text-[10px] text-[#81c784]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#4caf50] animate-pulse" />
+              {t.community.liveMode}
             </span>
           </div>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#fafafa]">
@@ -162,11 +150,6 @@ export const CommunityView: React.FC<CommunityViewProps> = ({
         </div>
       </div>
 
-      {!stats.isLive && (
-        <div className="mt-4 rounded-xl border border-[#252826] bg-[#111311] px-4 py-3 text-xs text-[#9a9aa3]">
-          {t.community.localModeNotice}
-        </div>
-      )}
 
       {unlockedCount < categories.length && (
         <div className="mt-4 flex flex-col justify-between gap-3 rounded-xl border border-[#233224] bg-[#101410] px-4 py-3.5 sm:flex-row sm:items-center">

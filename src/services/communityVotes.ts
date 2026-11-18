@@ -23,11 +23,20 @@ export function getOrCreateVoterToken(): string {
   }
 }
 
+function getBaseUrl(): string {
+  let url = SUPABASE_CONFIG.url.trim();
+  if (!url) return "";
+  if (!/^https?:\/\//i.test(url)) {
+    url = `https://${url}`;
+  }
+  return url.replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
+}
+
 async function callRpc<T>(
   fnName: string,
   payload?: Record<string, unknown>
 ): Promise<T> {
-  const baseUrl = SUPABASE_CONFIG.url.replace(/\/+$/, "");
+  const baseUrl = getBaseUrl();
   const res = await fetch(`${baseUrl}/rest/v1/rpc/${fnName}`, {
     method: "POST",
     headers: {

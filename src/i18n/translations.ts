@@ -152,8 +152,6 @@ export interface UITranslations {
     totalVotes: string;
     unlocked: string;
     liveMode: string;
-    localMode: string;
-    localModeNotice: string;
     antiBiasBanner: string;
     startVotingCta: string;
     lockedTitle: string;
@@ -327,10 +325,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       participants: "Participantes",
       totalVotes: "Votos acumulados",
       unlocked: "Categorias liberadas",
-      liveMode: "Contagem global ativa",
-      localMode: "Modo local (configure o Supabase)",
-      localModeNotice:
-        "Os gráficos estão exibindo apenas seus votos locais. Conecte seu projeto gratuito no Supabase para acumular os votos de toda a comunidade.",
+      liveMode: "Contagem oficial ativa",
       antiBiasBanner:
         "Para não influenciar quem ainda vai votar, os resultados de cada categoria ficam bloqueados até você registrar seu voto nela.",
       startVotingCta: "Ir para votação",
@@ -548,10 +543,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       participants: "Voters",
       totalVotes: "Total votes",
       unlocked: "Unlocked categories",
-      liveMode: "Global tally active",
-      localMode: "Local mode (configure Supabase)",
-      localModeNotice:
-        "Charts are currently showing only your local votes. Connect your free Supabase project to accumulate votes from the entire community.",
+      liveMode: "Official community tally",
       antiBiasBanner:
         "To avoid influencing voters, results for each category stay locked until you cast your vote in it.",
       startVotingCta: "Go to voting",
@@ -769,10 +761,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       participants: "Participantes",
       totalVotes: "Votos acumulados",
       unlocked: "Categorías desbloqueadas",
-      liveMode: "Conteo global activo",
-      localMode: "Modo local (configura Supabase)",
-      localModeNotice:
-        "Los gráficos muestran solo tus votos locales. Conecta tu proyecto gratuito en Supabase para acumular los votos de toda la comunidad.",
+      liveMode: "Conteo oficial activo",
       antiBiasBanner:
         "Para no influir en quienes aún votan, los resultados de cada categoría permanecen bloqueados hasta que registres tu voto.",
       startVotingCta: "Ir a votar",
@@ -991,10 +980,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       participants: "Участники",
       totalVotes: "Всего голосов",
       unlocked: "Открыто категорий",
-      liveMode: "Глобальный подсчёт активен",
-      localMode: "Локальный режим (подключите Supabase)",
-      localModeNotice:
-        "Сейчас графики показывают только ваши локальные голоса. Подключите бесплатный проект Supabase для общего подсчёта.",
+      liveMode: "Официальный подсчёт активен",
       antiBiasBanner:
         "Чтобы не влиять на голосующих, результаты каждой категории скрыты до того, как вы отдадите свой голос.",
       startVotingCta: "Перейти к голосованию",
