@@ -48,34 +48,6 @@ Toda a votação, o perfil do usuário (avatar + username) e as preferências de
 
 ---
 
-## Desenvolvimento local
-
-Requisitos: **Node.js 20+** e **npm**.
-
-```bash
-npm install
-npm run dev
-```
-
-Para gerar o build de produção:
-
-```bash
-npm run build
-npm run preview
-```
-
----
-
-## Publicação no GitHub Pages
-
-O repositório já está configurado com `base: "./"` em `vite.config.ts` e workflow pronto em `.github/workflows/deploy.yml`, funcionando diretamente em `https://<usuario>.github.io/<repositorio>/` sem ajustes de URL.
-
-1. Envie todo o conteúdo desta pasta para o repositório no GitHub (branch `main` ou `master`), mantendo a pasta `.github/`.
-2. No repositório, abra **Settings → Pages → Build and deployment → Source** e selecione **GitHub Actions**.
-3. Aguarde a execução da action **Deploy to GitHub Pages** na aba **Actions**.
-
----
-
 ## Personalização rápida
 
 | O que alterar | Onde editar |
