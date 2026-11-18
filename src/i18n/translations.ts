@@ -203,7 +203,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       allVoted: "Todas as categorias votadas",
       remainingOne: "Falta 1 categoria",
       remainingMany: (count) => `Faltam ${count} categorias`,
-      savedLocally: "Salvo localmente",
+      savedLocally: "Salvo automaticamente",
     },
     categoriesSection: {
       eyebrow: "Categorias Oficiais",
@@ -421,7 +421,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       allVoted: "All categories voted",
       remainingOne: "1 category left",
       remainingMany: (count) => `${count} categories left`,
-      savedLocally: "Saved locally",
+      savedLocally: "Saved automatically",
     },
     categoriesSection: {
       eyebrow: "Official Categories",
@@ -639,7 +639,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       allVoted: "Todas las categorías votadas",
       remainingOne: "Falta 1 categoría",
       remainingMany: (count) => `Faltan ${count} categorías`,
-      savedLocally: "Guardado localmente",
+      savedLocally: "Guardado automáticamente",
     },
     categoriesSection: {
       eyebrow: "Categorías Oficiales",
@@ -857,7 +857,7 @@ export const TRANSLATIONS: Record<Language, UITranslations> = {
       allVoted: "Все категории проголосованы",
       remainingOne: "Осталась 1 категория",
       remainingMany: (count) => `Осталось категорий: ${count}`,
-      savedLocally: "Сохранено локально",
+      savedLocally: "Сохранено автоматически",
     },
     categoriesSection: {
       eyebrow: "Официальные номинации",
