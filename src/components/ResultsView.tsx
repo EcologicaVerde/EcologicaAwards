@@ -9,7 +9,7 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
-import type { Category, VoterProfile, VotesMap } from "@/types/awards";
+import type { Category, Nominee, VoterProfile, VotesMap } from "@/types/awards";
 import { AWARDS_EDITION } from "@/data/categories";
 import { EcologicaLogo } from "@/components/EcologicaLogo";
 import { NomineeArtwork } from "@/components/NomineeArtwork";
@@ -17,6 +17,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { useLanguage } from "@/i18n/LanguageContext";
+import type { UITranslations } from "@/i18n/translations";
 import { cn } from "@/lib/utils";
 
 interface ResultsViewProps {
@@ -29,6 +30,228 @@ interface ResultsViewProps {
   onBackToCategories: () => void;
 }
 
+interface BallotSheetProps {
+  gotyCategory: Category;
+  gotyNominee?: Nominee;
+  otherCategories: Category[];
+  votes: VotesMap;
+  profile: VoterProfile;
+  displayName: string;
+  initials: string;
+  votedCount: number;
+  totalCount: number;
+  t: UITranslations;
+  desktopExport?: boolean;
+  onEditCategory?: (categoryId: string) => void;
+}
+
+const BallotSheet: React.FC<BallotSheetProps> = ({
+  gotyCategory,
+  gotyNominee,
+  otherCategories,
+  votes,
+  profile,
+  displayName,
+  initials,
+  votedCount,
+  totalCount,
+  t,
+  desktopExport = false,
+  onEditCategory,
+}) => {
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-[20px] border border-[#233224] bg-[#0b0d0b]",
+        desktopExport ? "w-[980px] p-8" : "p-6 sm:p-8"
+      )}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-20 left-1/2 h-64 w-[620px] -translate-x-1/2"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(76, 175, 80, 0.22) 0%, rgba(27, 94, 32, 0.08) 46%, transparent 74%)",
+        }}
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#4caf50] to-transparent opacity-75"
+      />
+
+      <div
+        className={cn(
+          "relative z-10 flex justify-between gap-6 border-b border-[#1c241d] pb-6",
+          desktopExport
+            ? "flex-row items-center"
+            : "flex-col sm:flex-row sm:items-center"
+        )}
+      >
+        <div className="flex items-center gap-4">
+          <EcologicaLogo size="md" withAura />
+          <div>
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-[#66bb6a]">
+              {t.results.officialCard(AWARDS_EDITION)}
+            </p>
+            <h2 className="mt-0.5 text-2xl font-bold tracking-tight text-[#fafafa]">
+              Ecológica Awards
+            </h2>
+            <p className="text-xs text-[#8c8c94]">{t.brandSubtitle}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3.5 rounded-xl border border-[#223023] bg-[#101410]/95 px-4 py-3">
+          <Avatar
+            src={profile.avatar}
+            fallback={initials}
+            size="lg"
+            className="ring-2 ring-[#4caf50]/50 ring-offset-2 ring-offset-[#101410]"
+          />
+          <div className="min-w-0">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-[#66bb6a]">
+              {t.results.votesBy}
+            </p>
+            <p className="truncate text-sm font-semibold text-[#fafafa]">
+              @{displayName}
+            </p>
+            <p className="mt-0.5 font-mono text-[11px] text-[#7c7c85]">
+              {t.results.categoriesCount(votedCount, totalCount)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 mt-6">
+        <button
+          type="button"
+          onClick={
+            onEditCategory ? () => onEditCategory(gotyCategory.id) : undefined
+          }
+          className={cn(
+            "group relative flex w-full justify-between gap-4 overflow-hidden rounded-xl border border-[#4caf50]/35 bg-gradient-to-br from-[#131c14] via-[#101410] to-[#0e100e] text-left transition-all duration-200 hover:border-[#4caf50]/70",
+            desktopExport
+              ? "flex-row items-center p-5"
+              : "flex-col p-4 sm:flex-row sm:items-center sm:p-5 cursor-pointer"
+          )}
+        >
+          <div className="flex items-center gap-4">
+            {gotyNominee ? (
+              <NomineeArtwork
+                nominee={gotyNominee}
+                compact
+                className="h-16 w-16 shrink-0 rounded-lg border border-[#324a34]"
+              />
+            ) : (
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-dashed border-[#2a332b] bg-[#0e100e] text-[#52525b]">
+                <Award className="h-5 w-5" />
+              </div>
+            )}
+
+            <div>
+              <div className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-[#66bb6a]">
+                <Sparkles className="h-3 w-3" />
+                {t.categoryCard.catPrefix} {gotyCategory.number} •{" "}
+                {gotyCategory.title}
+              </div>
+              <h3
+                className={cn(
+                  "mt-1 font-bold tracking-tight text-[#fafafa]",
+                  desktopExport ? "text-xl" : "text-lg sm:text-xl"
+                )}
+              >
+                {gotyNominee ? gotyNominee.title : t.results.notSelectedYet}
+              </h3>
+              <p className="text-xs text-[#8c8c94]">
+                {gotyNominee
+                  ? `${gotyNominee.studio} • ${gotyNominee.genre}`
+                  : t.results.clickToChooseGoty}
+              </p>
+            </div>
+          </div>
+
+          {!desktopExport && (
+            <span className="self-start rounded-md border border-[#4caf50]/30 bg-[#4caf50]/10 px-2.5 py-1 text-[11px] font-medium text-[#81c784] transition-colors group-hover:bg-[#4caf50]/20 sm:self-center">
+              {gotyNominee ? t.results.changeVote : t.results.vote}
+            </span>
+          )}
+        </button>
+      </div>
+
+      <div
+        className={cn(
+          "relative z-10 mt-4 grid gap-3",
+          desktopExport
+            ? "grid-cols-3"
+            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        )}
+      >
+        {otherCategories.map((cat) => {
+          const pick = cat.nominees.find((n) => n.id === votes[cat.id]);
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={
+                onEditCategory ? () => onEditCategory(cat.id) : undefined
+              }
+              className={cn(
+                "group flex items-center gap-3 rounded-xl border p-3.5 text-left transition-all duration-200",
+                !desktopExport && "cursor-pointer",
+                cat.featured &&
+                  (desktopExport
+                    ? "col-span-2"
+                    : "sm:col-span-2 lg:col-span-2"),
+                pick
+                  ? "border-[#1f2920] bg-[#111411] hover:border-[#3c563e]"
+                  : "border-dashed border-[#202024] bg-[#0e0e10] hover:border-[#34343a]"
+              )}
+            >
+              {pick ? (
+                <NomineeArtwork
+                  nominee={pick}
+                  compact
+                  className="h-12 w-12 shrink-0 rounded-md border border-[#2a382b]"
+                />
+              ) : (
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-[#1f1f23] bg-[#121214] font-mono text-[10px] text-[#52525b]">
+                  {cat.number}
+                </div>
+              )}
+
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-mono text-[10px] uppercase tracking-wider text-[#66bb6a]/85">
+                  {cat.number} • {cat.shortTitle}
+                </p>
+                <p
+                  className={cn(
+                    "mt-0.5 truncate text-xs font-semibold",
+                    pick ? "text-[#f4f4f5]" : "text-[#5c5c64]"
+                  )}
+                >
+                  {pick ? pick.title : t.results.noVote}
+                </p>
+                <p className="truncate text-[11px] text-[#7c7c85]">
+                  {pick ? pick.studio : t.results.clickToVote}
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="relative z-10 mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[#1a221b] pt-4 text-[11px] text-[#6a726b]">
+        <span className="font-medium text-[#81c784]/80">
+          Ecológica Awards – {AWARDS_EDITION}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-widest">
+          ecologicaverde.online • {t.brandSubtitle}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export const ResultsView: React.FC<ResultsViewProps> = ({
   categories,
   votes,
@@ -39,8 +262,9 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
   onBackToCategories,
 }) => {
   const { t } = useLanguage();
-  const ballotRef = React.useRef<HTMLDivElement>(null);
+  const exportRef = React.useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = React.useState(false);
+  const [renderDesktopExport, setRenderDesktopExport] = React.useState(false);
   const [confirmResetOpen, setConfirmResetOpen] = React.useState(false);
   const [exportMessage, setExportMessage] = React.useState<string | null>(null);
 
@@ -57,26 +281,56 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
   const displayName = profile.username.trim() || t.defaultUsername;
   const initials = displayName.slice(0, 2).toUpperCase();
 
+  const waitForImages = async (root: HTMLElement) => {
+    const imgs = Array.from(root.querySelectorAll("img"));
+    await Promise.all(
+      imgs.map((img) => {
+        if (img.complete && img.naturalWidth > 0) {
+          return img.decode ? img.decode().catch(() => undefined) : Promise.resolve();
+        }
+        return new Promise<void>((resolve) => {
+          const done = () => resolve();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+        });
+      })
+    );
+  };
+
   const handleDownloadPng = async () => {
-    if (!ballotRef.current || isExporting) return;
+    if (isExporting) return;
     try {
       setIsExporting(true);
       setExportMessage(null);
+      setRenderDesktopExport(true);
+
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+      );
+
+      const target = exportRef.current?.firstElementChild as HTMLElement | null;
+      if (!target) throw new Error("export_target_missing");
+
+      await waitForImages(target);
+
       const pixelRatio = window.innerWidth < 640 ? 1.5 : 2;
       const { toCanvas } = await import("html-to-image");
-      const renderedCanvas = await toCanvas(ballotRef.current, {
+      const renderedCanvas = await toCanvas(target, {
         cacheBust: true,
         pixelRatio,
+        width: 980,
         style: {
           margin: "0",
           boxShadow: "none",
         },
       });
+
       const outputCanvas = document.createElement("canvas");
       outputCanvas.width = renderedCanvas.width;
       outputCanvas.height = renderedCanvas.height;
       const ctx = outputCanvas.getContext("2d");
       if (!ctx) throw new Error("canvas_context_unavailable");
+
       const radius = 20 * pixelRatio;
       ctx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
       ctx.beginPath();
@@ -84,6 +338,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
       ctx.closePath();
       ctx.clip();
       ctx.drawImage(renderedCanvas, 0, 0);
+
       const dataUrl = outputCanvas.toDataURL("image/png");
       const safeName = displayName
         .toLowerCase()
@@ -93,11 +348,13 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
       link.download = `ecologica-awards-${AWARDS_EDITION}-${safeName || "votos"}.png`;
       link.href = dataUrl;
       link.click();
+
       setExportMessage(t.results.pngSuccess);
       setTimeout(() => setExportMessage(null), 3500);
     } catch {
       setExportMessage(t.results.pngError);
     } finally {
+      setRenderDesktopExport(false);
       setIsExporting(false);
     }
   };
@@ -171,160 +428,42 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="mt-6 rounded-[20px] shadow-2xl shadow-black/70"
       >
-        <div
-          ref={ballotRef}
-          className="relative overflow-hidden rounded-[20px] border border-[#233224] bg-[#0b0d0b] p-6 sm:p-8"
-        >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-20 left-1/2 h-64 w-[620px] -translate-x-1/2"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(76, 175, 80, 0.22) 0%, rgba(27, 94, 32, 0.08) 46%, transparent 74%)",
-            }}
-          />
-
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#4caf50] to-transparent opacity-75"
-          />
-
-          <div className="relative z-10 flex flex-col justify-between gap-6 border-b border-[#1c241d] pb-6 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4">
-              <EcologicaLogo size="md" withAura />
-              <div>
-                <p className="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-[#66bb6a]">
-                  {t.results.officialCard(AWARDS_EDITION)}
-                </p>
-                <h2 className="mt-0.5 text-2xl font-bold tracking-tight text-[#fafafa]">
-                  Ecológica Awards
-                </h2>
-                <p className="text-xs text-[#8c8c94]">{t.brandSubtitle}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5 rounded-xl border border-[#223023] bg-[#101410]/95 px-4 py-3">
-              <Avatar
-                src={profile.avatar}
-                fallback={initials}
-                size="lg"
-                className="ring-2 ring-[#4caf50]/50 ring-offset-2 ring-offset-[#101410]"
-              />
-              <div className="min-w-0">
-                <p className="text-[10px] font-mono uppercase tracking-wider text-[#66bb6a]">
-                  {t.results.votesBy}
-                </p>
-                <p className="truncate text-sm font-semibold text-[#fafafa]">
-                  @{displayName}
-                </p>
-                <p className="mt-0.5 font-mono text-[11px] text-[#7c7c85]">
-                  {t.results.categoriesCount(votedCount, totalCount)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative z-10 mt-6">
-            <button
-              type="button"
-              onClick={() => onEditCategory(gotyCategory.id)}
-              className="group relative flex w-full flex-col justify-between gap-4 overflow-hidden rounded-xl border border-[#4caf50]/35 bg-gradient-to-br from-[#131c14] via-[#101410] to-[#0e100e] p-4 text-left transition-all duration-200 hover:border-[#4caf50]/70 sm:flex-row sm:items-center sm:p-5 cursor-pointer"
-            >
-              <div className="flex items-center gap-4">
-                {gotyNominee ? (
-                  <NomineeArtwork
-                    nominee={gotyNominee}
-                    compact
-                    className="h-16 w-16 shrink-0 rounded-lg border border-[#324a34]"
-                  />
-                ) : (
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg border border-dashed border-[#2a332b] bg-[#0e100e] text-[#52525b]">
-                    <Award className="h-5 w-5" />
-                  </div>
-                )}
-
-                <div>
-                  <div className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-widest text-[#66bb6a]">
-                    <Sparkles className="h-3 w-3" />
-                    {t.categoryCard.catPrefix} {gotyCategory.number} •{" "}
-                    {gotyCategory.title}
-                  </div>
-                  <h3 className="mt-1 text-lg font-bold tracking-tight text-[#fafafa] sm:text-xl">
-                    {gotyNominee ? gotyNominee.title : t.results.notSelectedYet}
-                  </h3>
-                  <p className="text-xs text-[#8c8c94]">
-                    {gotyNominee
-                      ? `${gotyNominee.studio} • ${gotyNominee.genre}`
-                      : t.results.clickToChooseGoty}
-                  </p>
-                </div>
-              </div>
-
-              <span className="self-start rounded-md border border-[#4caf50]/30 bg-[#4caf50]/10 px-2.5 py-1 text-[11px] font-medium text-[#81c784] transition-colors group-hover:bg-[#4caf50]/20 sm:self-center">
-                {gotyNominee ? t.results.changeVote : t.results.vote}
-              </span>
-            </button>
-          </div>
-
-          <div className="relative z-10 mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {otherCategories.map((cat) => {
-              const pick = cat.nominees.find((n) => n.id === votes[cat.id]);
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => onEditCategory(cat.id)}
-                  className={cn(
-                    "group flex items-center gap-3 rounded-xl border p-3.5 text-left transition-all duration-200 cursor-pointer",
-                    cat.featured && "sm:col-span-2 lg:col-span-2",
-                    pick
-                      ? "border-[#1f2920] bg-[#111411] hover:border-[#3c563e]"
-                      : "border-dashed border-[#202024] bg-[#0e0e10] hover:border-[#34343a]"
-                  )}
-                >
-                  {pick ? (
-                    <NomineeArtwork
-                      nominee={pick}
-                      compact
-                      className="h-12 w-12 shrink-0 rounded-md border border-[#2a382b]"
-                    />
-                  ) : (
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-[#1f1f23] bg-[#121214] font-mono text-[10px] text-[#52525b]">
-                      {cat.number}
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-mono text-[10px] uppercase tracking-wider text-[#66bb6a]/85">
-                      {cat.number} • {cat.shortTitle}
-                    </p>
-                    <p
-                      className={cn(
-                        "mt-0.5 truncate text-xs font-semibold",
-                        pick ? "text-[#f4f4f5]" : "text-[#5c5c64]"
-                      )}
-                    >
-                      {pick ? pick.title : t.results.noVote}
-                    </p>
-                    <p className="truncate text-[11px] text-[#7c7c85]">
-                      {pick ? pick.studio : t.results.clickToVote}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="relative z-10 mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[#1a221b] pt-4 text-[11px] text-[#6a726b]">
-            <span className="font-medium text-[#81c784]/80">
-              Ecológica Awards – {AWARDS_EDITION}
-            </span>
-            <span className="font-mono text-[10px] uppercase tracking-widest">
-              ecologicaverde.online • {t.brandSubtitle}
-            </span>
-          </div>
-        </div>
+        <BallotSheet
+          gotyCategory={gotyCategory}
+          gotyNominee={gotyNominee}
+          otherCategories={otherCategories}
+          votes={votes}
+          profile={profile}
+          displayName={displayName}
+          initials={initials}
+          votedCount={votedCount}
+          totalCount={totalCount}
+          t={t}
+          onEditCategory={onEditCategory}
+        />
       </motion.div>
+
+      {renderDesktopExport && (
+        <div
+          ref={exportRef}
+          aria-hidden="true"
+          className="pointer-events-none fixed left-[-10000px] top-0 z-[-1]"
+        >
+          <BallotSheet
+            gotyCategory={gotyCategory}
+            gotyNominee={gotyNominee}
+            otherCategories={otherCategories}
+            votes={votes}
+            profile={profile}
+            displayName={displayName}
+            initials={initials}
+            votedCount={votedCount}
+            totalCount={totalCount}
+            t={t}
+            desktopExport
+          />
+        </div>
+      )}
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-[#71717a]">
         <span>{t.results.footerHint}</span>
